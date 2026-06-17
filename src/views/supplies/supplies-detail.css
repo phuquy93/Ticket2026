@@ -1,0 +1,185 @@
+/* Supplies Detail - Minimalist Design */
+
+/* Color Variables */
+:root {
+  --sd-text-primary: #2c3e50;
+  --sd-text-secondary: #606266;
+  --sd-text-muted: #909399;
+  --sd-border: #e4e7ed;
+  --sd-bg-card: #f5f7fa;
+  --sd-accent: #409eff;
+  --sd-success: #67c23a;
+  --sd-warning: #e6a23c;
+}
+
+/* Supply Detail Card */
+.supply-detail-card {
+  border: 1px solid var(--sd-border);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #fff;
+  transition: box-shadow 0.2s;
+  margin-top: 10px;
+}
+
+.supply-detail-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Grid Layout */
+.supply-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .supply-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Field Styling */
+.supply-field {
+  display: flex;
+  gap: 4px;
+}
+
+.supply-field-label {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: var(--sd-text-secondary) !important;
+  margin: 0 !important;
+}
+
+.supply-field-value {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: var(--sd-text-primary) !important;
+  margin: 0 !important;
+}
+
+.supply-field-value--code {
+  font-size: 13px;
+  color: var(--sd-text-muted);
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.supply-field-value--price {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--sd-warning) !important;
+}
+
+/* Product Name Styling */
+.supply-product-name {
+  font-size: 14px;
+  color: var(--sd-text-primary);
+}
+
+.supply-product-code {
+  font-size: 13px;
+  color: var(--sd-text-muted);
+  margin-left: 4px;
+}
+
+/* Table Section */
+.supply-table-section {
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.supply-table-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--sd-text-primary) !important;
+  margin: 0 0 12px 0 !important;
+}
+
+/* Checkbox Section */
+.supply-checkbox-group {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.supply-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.supply-checkbox-label {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--sd-text-secondary) !important;
+  margin: 0 !important;
+}
+
+/* Action Button */
+.supply-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Table Customization */
+.supply-detail-card .el-table {
+  font-size: 13px;
+}
+
+.supply-detail-card .el-table th {
+  background-color: var(--sd-bg-card);
+  color: var(--sd-text-secondary);
+  font-weight: 600;
+}
+
+.supply-detail-card .el-table td {
+  color: var(--sd-text-primary);
+}
+
+/* Full Width Field */
+.supply-field--full {
+  grid-column: 1 / -1;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.loading-text {
+  color: #3498db;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
