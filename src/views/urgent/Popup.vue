@@ -205,10 +205,10 @@
                   {{ detail.ngaytaophieu | moment("DD/MM/YYYY HH:mm:ss") }}
                 </div>
               </div>
-                <div class="field-group">
+              <div class="field-group">
                 <div class="field-label">Địa chỉ</div>
                 <div class="field-value">
-                  {{ detail.address2 | 'N/A' }}
+                  {{ detail.address2 || "N/A" }}
                 </div>
               </div>
               <div class="field-group">
@@ -218,6 +218,12 @@
                     <el-input v-model="phone" placeholder="Please input" />
                     <span
                       v-if="
+                        (detail.approved === 9 &&
+                          Number(
+                            user
+                              .find((a) => a.split('=')[0] === 'rule')
+                              .split('=')[1]
+                          ) === 7) ||
                         (detail.approved === 9 &&
                           Number(
                             user
@@ -276,7 +282,7 @@
                   </div>
                 </div>
               </div>
-                <div class="field-group">
+              <div class="field-group">
                 <div class="field-label">Ngày giao hàng</div>
                 <div class="field-value" v-if="!!detail.ngaygiaohang">
                   {{ detail.ngaygiaohang | moment("DD/MM/YYYY") }}
@@ -453,14 +459,14 @@
               <div class="field-group">
                 <div class="field-label">Chi nhánh bán</div>
                 <div class="field-value">
-                  {{ detail.code_store }} - {{ detail.store_name }}
+                  {{ detail.code_store_rate }} - {{ detail.store_name_rate }}
                 </div>
               </div>
 
               <div class="field-group">
                 <div class="field-label">Chi nhánh giao hàng</div>
                 <div class="field-value">
-                  {{ detail.code_store_rate }} - {{ detail.store_name_rate }}
+                  {{ detail.code_store }} - {{ detail.store_name }}
                 </div>
               </div>
 
@@ -532,7 +538,7 @@
                   {{ detail.code_store_rate }} - {{ detail.store_name_rate }}
                 </div>
               </div> -->
-                <div class="field-group">
+              <!-- <div class="field-group">
                 <div class="field-label">Chi nhánh xử lý</div>
                 <div class="field-value">
                   <span v-if="!!detail.code_store_rate">{{
@@ -540,8 +546,8 @@
                   }}</span>
                   <span v-else>N/A-</span>
                 </div>
-              </div>
-                 <div class="field-group">
+              </div> -->
+              <!-- <div class="field-group">
                 <div class="field-label">CN có NV vi phạn</div>
                 <div class="field-value">
                   <span v-if="!!detail.code_store">{{
@@ -549,7 +555,7 @@
                   }}</span>
                   <span v-else>N/A-</span>
                 </div>
-              </div>
+              </div> -->
 
               <div class="field-group">
                 <div class="field-label">Ngày tạo</div>
@@ -604,52 +610,34 @@
                 </div>
                 <div class="field-value" v-else>0</div>
               </div>
-               <div class="field-group">
+              <div class="field-group">
                 <div class="field-label">Thời gian hẹn lại</div>
-                <div
-                  class="field-value"
-
-                >
+                <div class="field-value">
                   {{ detail.thoi_gian_hen_lai || 0 }}
                 </div>
-
               </div>
-                 <div class="field-group">
-                <div class="field-label">Thời gian đến nhà khách </div>
-                <div
-                  class="field-value"
-                  v-if="
-                    !!detail.ngay_den_nha_khach
-                  "
-                >
+              <div class="field-group">
+                <div class="field-label">Thời gian đến nhà khách</div>
+                <div class="field-value" v-if="!!detail.ngay_den_nha_khach">
                   {{ detail.ngay_den_nha_khach || 0 }}
                 </div>
-
               </div>
-               <div class="field-group">
+              <div class="field-group">
                 <div class="field-label">Số lần gửi ticket</div>
-                <div
-                  class="field-value"
-                  v-if="
-                    !!detail.so_lan_gui_ticket
-                  "
-                >
-                  {{ detail.so_lan_gui_ticket  || 0 }}
+                <div class="field-value" v-if="!!detail.so_lan_gui_ticket">
+                  {{ detail.so_lan_gui_ticket || 0 }}
                 </div>
-
               </div>
-                 <div class="field-group" v-if="detail.approved === 9 ">
+              <div class="field-group" v-if="detail.approved === 9">
                 <div class="field-label">Vị trí giao nhận</div>
-                <div
-                  class="field-value"
-                >
+                <div class="field-value">
                   <el-button
-                        size="small"
-                        type="success"
-                        style="font-size: 16px; width: 130px"
-                        @click="dialogVisibleMap = true"
-                        >Xem</el-button
-                      >
+                    size="small"
+                    type="success"
+                    style="font-size: 16px; width: 130px"
+                    @click="dialogVisibleMap = true"
+                    >Xem</el-button
+                  >
                 </div>
               </div>
             </div>
@@ -685,11 +673,8 @@
                   >
                 </div>
               </div>
-               <div class="field-group">
-                <div class="field-label">
-                  Nội dung <br />
-                  QC đánh giá
-                </div>
+              <div class="field-group">
+                <div class="field-label">QC gửi giao nhận</div>
                 <div
                   v-if="
                     Number(
@@ -715,7 +700,7 @@
                     "
                   >
                     <div>
-                      <b  style="    font-size: 14px;">Ngày hẹn</b>
+                      <b style="font-size: 14px">Ngày hẹn</b>
                       <el-date-picker
                         style="margin-top: 5px; display: block"
                         v-model="ngay_hen"
@@ -727,7 +712,7 @@
                     </div>
                     <div style="display: flex; gap: 10px">
                       <div>
-                        <b  style="    font-size: 14px;">Từ</b>
+                        <b style="font-size: 14px">Từ</b>
                         <el-time-picker
                           style="margin-top: 5px; display: block; width: 120px"
                           v-model="gio_bat_dau"
@@ -737,7 +722,7 @@
                         />
                       </div>
                       <div>
-                        <b style="    font-size: 14px;">Đến</b>
+                        <b style="font-size: 14px">Đến</b>
                         <el-time-picker
                           style="margin-top: 5px; display: block; width: 120px"
                           v-model="gio_ket_thuc"
@@ -768,14 +753,52 @@
                   >
                 </div>
                 <div v-else>
-                  <div >{{ personnel_note }}</div>
-                  <div class="display: flex; margin-top: 10px; gap: 10px; flex-wrap: wrap;">
-                    <div >
-                      <b  style="font-size: 14px;display:block;margin-bottom:7px">Ngày hẹn</b>
-                      <div style="display: flex;gap: 5px;font-size: 14px;margin-bottom:7px">Từ giờ: <div>{{ ngay_hen || 'N/A'  }} {{ gio_bat_dau }}</div></div>
-                     <div style="display: flex;gap: 5px;font-size: 14px;margin-bottom:7px"> Đến giờ: <div>{{ ngay_hen || 'N/A'  }} {{ gio_ket_thuc }}</div></div>
-                      <b  style="font-size: 14px;display:block;margin-bottom:7px">Số lần hẹn</b>
-                      <div style="font-size: 14px;display:block;">{{ so_lan_hen_ticket || 'N/A' }}</div>
+                  <div>{{ personnel_note }}</div>
+                  <div
+                    class="display: flex; margin-top: 10px; gap: 10px; flex-wrap: wrap;"
+                  >
+                    <div>
+                      <b
+                        style="
+                          font-size: 14px;
+                          display: block;
+                          margin-bottom: 7px;
+                        "
+                        >Ngày hẹn</b
+                      >
+                      <div
+                        style="
+                          display: flex;
+                          gap: 5px;
+                          font-size: 14px;
+                          margin-bottom: 7px;
+                        "
+                      >
+                        Từ giờ:
+                        <div>{{ ngay_hen || "N/A" }} {{ gio_bat_dau }}</div>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          gap: 5px;
+                          font-size: 14px;
+                          margin-bottom: 7px;
+                        "
+                      >
+                        Đến giờ:
+                        <div>{{ ngay_hen || "N/A" }} {{ gio_ket_thuc }}</div>
+                      </div>
+                      <b
+                        style="
+                          font-size: 14px;
+                          display: block;
+                          margin-bottom: 7px;
+                        "
+                        >Số lần hẹn</b
+                      >
+                      <div style="font-size: 14px; display: block">
+                        {{ so_lan_hen_ticket || "N/A" }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1750,6 +1773,7 @@
 </template>
 
 <script>
+console.log("11");
 import DetailNew from "./Detailnew.vue";
 import LogPopup from "../Popup/LogPopup.vue";
 import MapPopup from "./Map.vue";
@@ -2575,7 +2599,7 @@ export default {
         .catch((error) => console.error("Lỗi:", error));
     },
     disabled() {
-      if ( this.personnel_name.trim() !== "") {
+      if (this.personnel_name.trim() !== "") {
         return false;
       }
       return true;
