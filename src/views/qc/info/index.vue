@@ -99,6 +99,14 @@
         />
       </el-col>
       <el-col :span="5">
+        <el-input
+          type="textarea"
+          v-model="form.description"
+          placeholder="Nhập nội dung"
+          rows="1"
+        />
+      </el-col>
+      <el-col :span="5">
         <el-button type="primary" icon="el-icon-search" @click="handleStore">
           Tìm kiếm
         </el-button>
@@ -120,7 +128,7 @@
       border
       height="550"
       ref="table"
-       :row-class-name="tableRowClassName"
+      :row-class-name="tableRowClassName"
     >
       <el-table-column label="ID" width="120" fixed="left">
         <template slot-scope="scope">
@@ -143,7 +151,7 @@
           {{ scope.row.pbn }}
         </template>
       </el-table-column>
-         <el-table-column
+      <el-table-column
         align="header-center"
         label="Chi nhánh xử lý"
         width="170"
@@ -321,6 +329,7 @@ export default {
         approved: "",
         phone: "",
         pbn: "",
+        description: "",
       },
 
       page: 1,
@@ -351,7 +360,7 @@ export default {
     this.getLists(1);
   },
   methods: {
-     tableRowClassName({ row, rowIndex }) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.show_color === 1) {
         return "warning-row";
       }
@@ -519,6 +528,7 @@ export default {
         date_cre_date_start,
         date_cre_date_end,
         type: 2,
+        description: this.form.description,
       })
         .then((res) => {
           if (Number(res.status) === 200) {
@@ -589,6 +599,8 @@ export default {
           "&date_cre_date_end=" +
           date_cre_date_end +
           "&type=2" +
+          "&description=" +
+          this.form.description +
           "&" +
           this.user.join("&") +
           "&id=" +
@@ -628,6 +640,8 @@ export default {
           "&date_cre_date_end=" +
           date_cre_date_end +
           "&type=2" +
+          "&description=" +
+          this.form.description +
           "&" +
           this.user.join("&") +
           "&id=" +

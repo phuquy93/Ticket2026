@@ -82,6 +82,13 @@ export function getDashboardurgent() {
   });
 }
 
+export function getCountTicketXuly() {
+  return request({
+    url: "/restful/countticketxuly?",
+    method: "get",
+  });
+}
+
 export function getLists(data) {
   let pbn = "";
   let id = "";
@@ -98,7 +105,8 @@ export function getLists(data) {
     doitra = "&doitra=" + data.doitra;
   }
   if (data.status_cuoc_goi_den_hen) {
-    status_cuoc_goi_den_hen = "&status_cuoc_goi_den_hen=" + data.status_cuoc_goi_den_hen;
+    status_cuoc_goi_den_hen =
+      "&status_cuoc_goi_den_hen=" + data.status_cuoc_goi_den_hen;
   }
   if (data.id) {
     id = "&id=" + data.id;
@@ -140,6 +148,11 @@ export function getLists(data) {
   if (!!data.device) {
     device = "&device=" + data.device;
   }
+
+  let description = "";
+  if (data.description) {
+    description = "&description=" + data.description;
+  }
   return request({
     url:
       "/restful/listticket?page=" +
@@ -155,8 +168,9 @@ export function getLists(data) {
       data.date_cre_date_end +
       "&phone=" +
       data.phone +
+      description +
       "&type=" +
-      data.type +
+      +data.type +
       pbn +
       id +
       doitra +

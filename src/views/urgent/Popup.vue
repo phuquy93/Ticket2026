@@ -466,7 +466,8 @@
               <div class="field-group">
                 <div class="field-label">Chi nhánh giao hàng</div>
                 <div class="field-value">
-                  {{ detail.code_store }} - {{ detail.store_name }}
+                  {{ detail.code_store_giao_hang }} -
+                  {{ detail.store_name_giao_hang }}
                 </div>
               </div>
 
@@ -594,6 +595,20 @@
                   "
                 >
                   {{ detail.name_user }}
+                </div>
+                <div class="field-value" v-else>N/A</div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Tên QC</div>
+                <div
+                  class="field-value"
+                  v-if="
+                    detail.name_user_create &&
+                    detail.name_user_create !== null &&
+                    detail.name_user_create !== ''
+                  "
+                >
+                  {{ detail.name_user_create }}
                 </div>
                 <div class="field-value" v-else>N/A</div>
               </div>
@@ -1773,7 +1788,6 @@
 </template>
 
 <script>
-console.log("11");
 import DetailNew from "./Detailnew.vue";
 import LogPopup from "../Popup/LogPopup.vue";
 import MapPopup from "./Map.vue";
@@ -2248,6 +2262,8 @@ export default {
       }
     },
     handleUpdate(id, approved) {
+      // Chặn double-click: đang gọi API thì bỏ qua các click tiếp theo
+      if (this.loading) return false;
       if (approved === 4 && this.note_user === "") {
         this.$notify({
           title: "Warning",
@@ -2463,6 +2479,9 @@ export default {
             duration: 5 * 1000,
           });
         }
+        this.loading = false;
+      }).catch(() => {
+        // API lỗi/timeout: mở khóa lại để có thể bấm gọi lại
         this.loading = false;
       });
     },

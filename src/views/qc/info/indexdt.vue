@@ -1,4 +1,3 @@
-
 <template>
   <div class="app-container">
     <div
@@ -585,4 +584,3 @@ export default {
   },
 };
 </script>
-
