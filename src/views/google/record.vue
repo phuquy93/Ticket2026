@@ -70,12 +70,17 @@
       </el-col>
     </el-row>
 
+    <div class="table-legend" v-if="lists && lists.length">
+      <span class="table-legend__box"></span>
+      <span>Yêu cầu xử lý</span>
+    </div>
     <el-table
       v-if="tab === 1"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
       style="width: 100%; margin-top: 30px; margin-bottom: 30px"
       border
+      :row-class-name="tableRowClassName"
     >
       <el-table-column label="Mã chi nhánh">
         <template slot-scope="scope">
@@ -261,6 +266,9 @@ export default {
     });
   },
   methods: {
+    tableRowClassName({ row }) {
+      return row.show_color === 1 ? "warning-row" : "";
+    },
     handlePage(page) {
       this.paginationslice(this.lists, 10, page);
     },

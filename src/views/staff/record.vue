@@ -60,12 +60,17 @@
       </el-col>
     </el-row>
 
+    <div class="table-legend" v-if="lists && lists.length">
+      <span class="table-legend__box"></span>
+      <span>Yêu cầu xử lý</span>
+    </div>
     <el-table
       v-if="tab === 1"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
       style="width: 100%; margin-top: 30px; margin-bottom: 30px"
       border
+      :row-class-name="tableRowClassName"
       height="550"
     >
       <el-table-column label="ID" width="80">
@@ -464,6 +469,9 @@ export default {
     }
   },
   methods: {
+    tableRowClassName({ row }) {
+      return row.show_color === 1 ? "warning-row" : "";
+    },
     formatPrice(value) {
       if (value) {
         return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");

@@ -100,11 +100,19 @@
       </el-col>
     </el-row>
 
+    <div
+        class="table-legend"
+        v-if="listsdata(lists.data) && listsdata(lists.data).length"
+      >
+      <span class="table-legend__box"></span>
+      <span>Yêu cầu xử lý</span>
+    </div>
     <el-table
       v-loading="loading"
       :data="listsdata(lists.data)"
       style="width: 100%; margin-top: 30px"
       border
+      :row-class-name="tableRowClassName"
     >
       <el-table-column label="ID" width="80">
         <template slot-scope="scope">
@@ -316,6 +324,9 @@ export default {
     this.getLists(1);
   },
   methods: {
+    tableRowClassName({ row }) {
+      return row.show_color === 1 ? "warning-row" : "";
+    },
     handleAdd(status) {
       this.formAdd = status;
     },

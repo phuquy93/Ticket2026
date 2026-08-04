@@ -1475,6 +1475,7 @@ import {
   saveQcdanhgia,
   saverateCustomer,
 } from "@/api/ticket";
+import callGuard from "@/utils/callGuard";
 import { Message } from "element-ui";
 import { getUser } from "@/utils/auth.js";
 import { getlists } from "@/api/department";
@@ -1490,6 +1491,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 
 export default {
   name: "ComponentTicketPopup",
+  mixins: [callGuard],
   props: ["dialogVisible", "lists", "detail", "page", "stores"],
   components: { DetailNew, LogPopup, StaffPopup },
   data() {
@@ -2242,6 +2244,8 @@ export default {
         return false;
       }
 
+      // Cuộc gọi bắt đầu -> chặn đóng/refresh tab cho tới khi updateRecord xong
+      this.startCallGuard();
       this.loading = true;
 
       fetch(`${url}/restful/accountcall`, {
@@ -2284,6 +2288,8 @@ export default {
                   const formData = new FormData();
                   formData.append("record", JSON.stringify(logRecord));
                   formData.append("id", this.detail.id);
+                  // giữ payload: user vẫn đóng tab -> pagehide bắn beacon cứu data
+                  this.setCallBeacon(formData);
                   updateRecord(formData)
                     .then((res) => {
                       if (Number(res.status) === 200) {
@@ -2313,6 +2319,11 @@ export default {
                         type: "error",
                         duration: 5 * 1000,
                       });
+                    })
+                    .finally(() => {
+                      // updateRecord xong (kể cả lỗi) -> cho đóng tab bình thường
+                      this.clearCallBeacon();
+                      this.endCallGuard();
                     });
                 } else if (
                   data.status == 200 &&
@@ -2325,11 +2336,30 @@ export default {
                     type: "error",
                   });
                 }
+                if (!(data.status == 200 && data?.data?.error?.code == 0)) {
+                  // không đặt được cuộc gọi -> không có updateRecord -> bỏ chặn
+                  this.endCallGuard();
+                }
                 this.loading = false;
+              })
+              .catch((error) => {
+                // lỗi khi gọi clickToCall -> bỏ chặn, tránh treo cảnh báo đóng tab
+                this.endCallGuard();
+                this.loading = false;
+                console.error("Lỗi clickToCall:", error);
               });
+          } else {
+            // không lấy được accessToken -> bỏ chặn
+            this.endCallGuard();
+            this.loading = false;
           }
         })
-        .catch((error) => console.error("Lỗi:", error));
+        .catch((error) => {
+          // lỗi khi lấy account call -> bỏ chặn
+          this.endCallGuard();
+          this.loading = false;
+          console.error("Lỗi:", error);
+        });
     },
     disabled() {
       if (this.personnel_name.trim() !== "") {

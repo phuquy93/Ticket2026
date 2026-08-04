@@ -343,7 +343,7 @@
                   <span v-else>N/A-</span>
                 </div>
               </div>
-                 <div class="field-group">
+              <div class="field-group">
                 <div class="field-label">CN có NV vi phạn</div>
                 <div class="field-value">
                   <span v-if="!!detail.code_store">{{
@@ -551,9 +551,8 @@
                 <div class="field-label">Thời gian hẹn xử lý</div>
                 <div
                   class="field-value"
-                  v-if="
-                    detail.approved === 0 ||
-                    detail.approved === 5"                >
+                  v-if="detail.approved === 0 || detail.approved === 5"
+                >
                   <el-date-picker
                     style="width: 100%"
                     v-model="thoi_gian_hen"
@@ -1577,6 +1576,7 @@ import {
   luunotexuly,
   sendMail,
 } from "@/api/ticket";
+import callGuard from "@/utils/callGuard";
 import { Message } from "element-ui";
 import { getUser } from "@/utils/auth.js";
 import { getlists } from "@/api/department";
@@ -1592,6 +1592,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 
 export default {
   name: "ComponentTicketPopup",
+  mixins: [callGuard],
   props: ["dialogVisible", "lists", "detail", "page", "stores"],
   components: { DetailNew, LogPopup, StaffPopup },
   data() {
@@ -2132,15 +2133,15 @@ export default {
         formData.append("personnel_note", this.personnel_note);
         formData.append("type_xu_ly", this.type_xu_ly);
 
-         let thoi_gian_hen = this.thoi_gian_hen;
+        let thoi_gian_hen = this.thoi_gian_hen;
 
-      if (!!thoi_gian_hen) {
-        thoi_gian_hen = new Date(this.thoi_gian_hen).toLocaleString("sv-SE");
-      } else {
-        thoi_gian_hen = "";
-      }
+        if (!!thoi_gian_hen) {
+          thoi_gian_hen = new Date(this.thoi_gian_hen).toLocaleString("sv-SE");
+        } else {
+          thoi_gian_hen = "";
+        }
 
-      formData.append("thoi_gian_hen", thoi_gian_hen);
+        formData.append("thoi_gian_hen", thoi_gian_hen);
 
         formData.append("mp3Files", this.file);
 
@@ -2339,6 +2340,8 @@ export default {
         return false;
       }
 
+      // Cuộc gọi bắt đầu -> chặn đóng/refresh tab cho tới khi updateRecord xong
+      this.startCallGuard();
       this.loading = true;
 
       fetch(`${url}/restful/accountcall`, {
@@ -2381,6 +2384,8 @@ export default {
                   const formData = new FormData();
                   formData.append("record", JSON.stringify(logRecord));
                   formData.append("id", this.detail.id);
+                  // giữ payload: user vẫn đóng tab -> pagehide bắn beacon cứu data
+                  this.setCallBeacon(formData);
                   updateRecord(formData)
                     .then((res) => {
                       if (Number(res.status) === 200) {
@@ -2410,6 +2415,11 @@ export default {
                         type: "error",
                         duration: 5 * 1000,
                       });
+                    })
+                    .finally(() => {
+                      // updateRecord xong (kể cả lỗi) -> cho đóng tab bình thường
+                      this.clearCallBeacon();
+                      this.endCallGuard();
                     });
                 } else if (
                   data.status == 200 &&
@@ -2422,11 +2432,30 @@ export default {
                     type: "error",
                   });
                 }
+                if (!(data.status == 200 && data?.data?.error?.code == 0)) {
+                  // không đặt được cuộc gọi -> không có updateRecord -> bỏ chặn
+                  this.endCallGuard();
+                }
                 this.loading = false;
+              })
+              .catch((error) => {
+                // lỗi khi gọi clickToCall -> bỏ chặn, tránh treo cảnh báo đóng tab
+                this.endCallGuard();
+                this.loading = false;
+                console.error("Lỗi clickToCall:", error);
               });
+          } else {
+            // không lấy được accessToken -> bỏ chặn
+            this.endCallGuard();
+            this.loading = false;
           }
         })
-        .catch((error) => console.error("Lỗi:", error));
+        .catch((error) => {
+          // lỗi khi lấy account call -> bỏ chặn
+          this.endCallGuard();
+          this.loading = false;
+          console.error("Lỗi:", error);
+        });
     },
     disabled() {
       if (this.personnel_note !== "" && this.personnel_name.trim() !== "") {

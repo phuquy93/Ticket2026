@@ -109,6 +109,13 @@
       @current-change="handleCurrentChange"
     />
 
+    <div
+        class="table-legend"
+        v-if="listsdata(lists.data) && listsdata(lists.data).length"
+      >
+      <span class="table-legend__box"></span>
+      <span>Yêu cầu xử lý</span>
+    </div>
     <el-table
       v-loading="loading"
       :data="listsdata(lists.data)"

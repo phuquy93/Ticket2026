@@ -678,3 +678,35 @@ body::-webkit-scrollbar-thumb {
   background-color: rgb(222, 94, 30);
   border-radius: 6px;
 }
+
+/* Tô màu dòng ticket cần chú ý (show_color === 1) */
+.el-table .warning-row {
+  background: #fdf5e6 !important;
+}
+
+/* Chú thích màu dòng bảng */
+.table-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0;
+  font-size: 13px;
+  color: #606266;
+}
+/* Legend nằm ngay sau phân trang -> hiển thị cùng 1 hàng (ngang) */
+.el-pagination:has(+ .table-legend) {
+  display: inline-block;
+  vertical-align: middle;
+}
+.el-pagination + .table-legend {
+  margin: 0 0 0 20px;
+  vertical-align: middle;
+}
+.table-legend__box {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  background: #fdf5e6;
+  border: 1px solid #ebeef5;
+  flex-shrink: 0;
+}
