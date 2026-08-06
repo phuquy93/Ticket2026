@@ -103,7 +103,7 @@
       style="width: 100%"
       border
       height="550"
-        :row-class-name="tableRowClassName"
+      :row-class-name="tableRowClassName"
     >
       <el-table-column label="ID" width="120" fixed="left">
         <template slot-scope="scope">
@@ -137,7 +137,7 @@
           >
         </template>
       </el-table-column>
-         <el-table-column
+      <el-table-column
         align="header-center"
         label="Chi nhánh xử lý"
         width="170"
@@ -307,7 +307,7 @@ export default {
     this.getLists(1);
   },
   methods: {
-     tableRowClassName({ row, rowIndex }) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.show_color === 1) {
         return "warning-row";
       }

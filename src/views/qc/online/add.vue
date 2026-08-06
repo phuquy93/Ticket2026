@@ -223,7 +223,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // this.loadingPopup = true;
+          this.loadingPopup = true;
 
           let code_store = this.role.code_store;
 

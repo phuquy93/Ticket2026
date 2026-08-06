@@ -138,7 +138,7 @@
           >
         </template>
       </el-table-column>
-         <el-table-column
+      <el-table-column
         align="header-center"
         label="Chi nhánh xử lý"
         width="170"
