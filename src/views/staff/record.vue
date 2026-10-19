@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <div class="app-container list-page">
+    <div class="filter-card">
     <el-row class="search">
       <el-col :span="5">
         <el-select
@@ -53,50 +54,85 @@
           />
         </el-select>
       </el-col>
-      <el-col :span="4">
+    </el-row>
+      <div class="filter-actions">
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">
           Tìm kiếm
         </el-button>
-      </el-col>
-    </el-row>
-
-    <div class="table-legend" v-if="lists && lists.length">
-      <span class="table-legend__box"></span>
-      <span>Yêu cầu xử lý</span>
+      </div>
     </div>
+
+    <div class="table-card">
+      <div class="table-card__head">
+        <div class="table-legend" v-if="lists && lists.length">
+          <span class="table-legend__box"></span>
+          <span>Yêu cầu xử lý</span>
+        </div>
+        <div class="table-card__actions">
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            @click="exportExcelOne()"
+          >
+            Excel xuất đếm số lượng vi phạm
+          </el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            @click="exportExcelcriterion()"
+          >
+            Tổng số lượng tiêu chí nhân viên
+          </el-button>
+          <!-- <el-button
+            type="primary"
+            icon="el-icon-download"
+            @click="exportExcelStore()"
+          >
+            Tổng số lượng tiêu chí lỗi của chi nhánh
+          </el-button> -->
+          <el-button
+            style="margin-bottom: 5px"
+            type="primary"
+            icon="el-icon-download"
+            @click="exportTongtienphat()"
+          >
+            Excel tổng tiền phạt của chi nhánh
+          </el-button>
+        </div>
+      </div>
     <el-table
       v-if="tab === 1"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
       :row-class-name="tableRowClassName"
-      height="550"
+
     >
-      <el-table-column label="ID" width="80">
+      <el-table-column label="ID" width="80" show-overflow-tooltip>
         <template slot-scope="scope"> {{ scope.row.id }} </template>
       </el-table-column>
-      <el-table-column label="Mã chi nhánh">
+      <el-table-column label="Mã chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.code_store }}
         </template>
       </el-table-column>
-      <el-table-column label="Họ tên">
+      <el-table-column label="Họ tên" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="Phiếu biên nhận">
+      <el-table-column label="Phiếu biên nhận" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.pbn }}
         </template>
       </el-table-column>
-      <el-table-column label="Nội dung">
+      <el-table-column label="Nội dung" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.description }}
         </template>
       </el-table-column>
-      <el-table-column label="Trạng thái">
+      <el-table-column label="Trạng thái" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.approved }}
         </template>
@@ -106,50 +142,50 @@
       v-if="tab === 2"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
     >
-      <el-table-column label="Mã chi nhánh" width="120">
+      <el-table-column label="Mã chi nhánh" width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.code_store }}
         </template>
       </el-table-column>
-      <el-table-column label="Tên chi nhánh">
+      <el-table-column label="Tên chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.name_store }}
         </template>
       </el-table-column>
-      <el-table-column label="Số lượng ticket">
+      <el-table-column label="Số lượng ticket" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.count_ticket }}
         </template>
       </el-table-column>
-      <el-table-column label="Mới tạo">
+      <el-table-column label="Mới tạo" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.moi_tao }}
         </template>
       </el-table-column>
-      <el-table-column label="Cần thẩm định">
+      <el-table-column label="Cần thẩm định" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.can_tham_dinh }}
         </template>
       </el-table-column>
-      <el-table-column label="Yêu cầu xử lý lại">
+      <el-table-column label="Yêu cầu xử lý lại" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.yeu_cau_xu_ly_lai }}
         </template>
       </el-table-column>
-      <el-table-column label="Đợi ra biên bản">
+      <el-table-column label="Đợi ra biên bản" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.doi_ra_bien_ban }}
         </template>
       </el-table-column>
-      <el-table-column label="Đã ra biên bản">
+      <el-table-column label="Đã ra biên bản" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.da_ra_bien_ban }}
         </template>
       </el-table-column>
-      <el-table-column label="Đã xử lý">
+      <el-table-column label="Đã xử lý" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.da_xy_ly }}
         </template>
@@ -159,20 +195,20 @@
       v-if="tab === 3"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
     >
-      <el-table-column label="Mã chi nhánh" width="120">
+      <el-table-column label="Mã chi nhánh" width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.machinhanh }}
         </template>
       </el-table-column>
-      <el-table-column label="Mã nhân viên">
+      <el-table-column label="Mã nhân viên" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.manv }}
         </template>
       </el-table-column>
-      <el-table-column label="Tên Nhân Viên">
+      <el-table-column label="Tên Nhân Viên" show-overflow-tooltip>
         <template slot-scope="scope">
           {{
             Object.entries(status(scope.row)).find(
@@ -181,7 +217,7 @@
           }}
         </template>
       </el-table-column>
-      <el-table-column label="Tên chi nhánh">
+      <el-table-column label="Tên chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{
             Object.entries(status(scope.row)).find(
@@ -206,7 +242,7 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="Số lỗi">
+      <el-table-column label="Số lỗi" show-overflow-tooltip>
         <template slot-scope="scope">
           {{
             Object.entries(status(scope.row)).find(
@@ -220,61 +256,61 @@
       v-if="tab === 4"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
     >
-      <el-table-column label="ID" width="80">
+      <el-table-column label="ID" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="Mã nhân viên">
+      <el-table-column label="Mã nhân viên" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.personnel_name }}
         </template>
       </el-table-column>
-      <el-table-column label="Mã chi nhánh">
+      <el-table-column label="Mã chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.code_store }}
         </template>
       </el-table-column>
-      <el-table-column label="Tiêu chí đánh giá nhân viên" width="280">
+      <el-table-column label="Tiêu chí đánh giá nhân viên" width="280" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.string_rate }}
         </template>
       </el-table-column>
 
-      <el-table-column label="Tiêu đề">
+      <el-table-column label="Tiêu đề" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="Phiếu biên nhận">
+      <el-table-column label="Phiếu biên nhận" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.pbn }}
         </template>
       </el-table-column>
-      <el-table-column label="Nội dung" width="280">
+      <el-table-column label="Nội dung" min-width="280" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.description }}
         </template>
       </el-table-column>
-      <el-table-column label="Trạng thái">
+      <el-table-column label="Trạng thái" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.approved }}
         </template>
       </el-table-column>
-      <el-table-column label="Số sao thẩm định">
+      <el-table-column label="Số sao thẩm định" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.rate }}
         </template>
       </el-table-column>
-      <el-table-column label="Note xử lý">
+      <el-table-column label="Note xử lý" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.note_user }}
         </template>
       </el-table-column>
-      <el-table-column label="Note thẩm định">
+      <el-table-column label="Note thẩm định" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.note_user_expertise }}
         </template>
@@ -284,15 +320,15 @@
       v-if="tab === 5"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
     >
-      <el-table-column label="Mã chi nhánh">
+      <el-table-column label="Mã chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.machinhanh }}
         </template>
       </el-table-column>
-      <el-table-column label="Tên chi nhánh">
+      <el-table-column label="Tên chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.name_store }}
         </template>
@@ -310,7 +346,7 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="Tổng số lỗi">
+      <el-table-column label="Tổng số lỗi" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.count_total_ticket }}
         </template>
@@ -320,20 +356,20 @@
       v-if="tab === 7"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
     >
-      <el-table-column label="Mã chi nhánh">
+      <el-table-column label="Mã chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.machinhanh }}
         </template>
       </el-table-column>
-      <el-table-column label="Tên chi nhánh">
+      <el-table-column label="Tên chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.name_store }}
         </template>
       </el-table-column>
-      <el-table-column label="Tổng tiền phạt">
+      <el-table-column label="Tổng tiền phạt" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ formatPrice(scope.row.tienphat) }}
         </template>
@@ -347,40 +383,7 @@
       :total="lists.length"
       @current-change="handlePage"
     />
-    <!-- Excel -->
-    <el-row style="margin-top: 30px">
-      <el-col :span="24">
-        <el-button
-          type="primary"
-          icon="el-icon-download"
-          @click="exportExcelOne()"
-        >
-          Excel xuất đếm số lượng vi phạm
-        </el-button>
-        <el-button
-          type="primary"
-          icon="el-icon-download"
-          @click="exportExcelcriterion()"
-        >
-          Tổng số lượng tiêu chí nhân viên
-        </el-button>
-        <!-- <el-button
-          type="primary"
-          icon="el-icon-download"
-          @click="exportExcelStore()"
-        >
-          Tổng số lượng tiêu chí lỗi của chi nhánh
-        </el-button> -->
-        <el-button
-          style="margin-bottom: 5px"
-          type="primary"
-          icon="el-icon-download"
-          @click="exportTongtienphat()"
-        >
-          Excel tổng tiền phạt của chi nhánh
-        </el-button>
-      </el-col>
-    </el-row>
+    </div>
   </div>
 </template>
 

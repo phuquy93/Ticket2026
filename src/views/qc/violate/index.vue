@@ -297,6 +297,7 @@ import Popup from "./Popup.vue";
 import Add from "./add.vue";
 import Detail from "../Popup/Detail.vue";
 import { getLists, postExcelqc } from "@/api/ticket";
+import openDetailFromQuery from "@/utils/openDetailFromQuery";
 import { Message } from "element-ui";
 import { removeData, getUser } from "@/utils/auth.js";
 
@@ -310,6 +311,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 export default {
   name: "ComponentCompleted",
   components: { Popup, Detail, Add },
+  mixins: [openDetailFromQuery],
   data() {
     return {
       formAdd: false,
@@ -367,8 +369,8 @@ export default {
         this.loadingStore = false;
       });
     }
-    if (!!window.location.hash && window.location.hash.split("=")[1]) {
-      this.form.approved = window.location.hash.split("=")[1];
+    if (this.routeParam("approved")) {
+      this.form.approved = this.routeParam("approved");
     }
     this.getLists(1);
   },

@@ -62,6 +62,28 @@ export const constantRoutes = [
     ],
   },
   {
+    path: "/manage/install/:id",
+    component: Layout,
+    alwaysShow: false,
+    name: "InstallDetailLayout",
+    meta: {
+      title: "Chi tiết quản lý ticket lắp đặt",
+      roles: [1, 2, 3, 4, 5, 6],
+    },
+    children: [
+      {
+        path: "/manage/install/:id",
+        component: () => import("@/views/install/detail.vue"),
+        name: "InstallDetail",
+        meta: {
+          isTabs: false,
+          title: "Chi tiết quản lý ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+    ],
+  },
+  {
     path: "/manage/chart",
     component: Layout,
     alwaysShow: true,
@@ -125,6 +147,29 @@ export const constantRoutes = [
         name: "Dashboard2x",
         meta: {
           title: "Ticket nhân viên qua Camera",
+          roles: [1, 2, 3, 4, 5, 6, 7],
+        },
+      },
+    ],
+  },
+  {
+    path: "/manage/dashboardinstall",
+    component: Layout,
+    alwaysShow: true,
+    name: "Dashboardinstall",
+    id: 1,
+    meta: {
+      title: "Ticket lắp đặt",
+      icon: "fa fa-align-left",
+      roles: [1, 2, 3, 4, 5, 6, 7],
+    },
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/dashboardinstall/"),
+        name: "DashboardinstallViews",
+        meta: {
+          title: "Ticket lắp đặt",
           roles: [1, 2, 3, 4, 5, 6, 7],
         },
       },
@@ -572,6 +617,83 @@ export const constantRoutes = [
     ],
   },
   {
+    path: "/manage/install",
+    pathparent: "/manage/dashboardinstall",
+    component: Layout,
+    alwaysShow: false,
+    name: "Ticketinstall",
+    id: 6,
+    meta: {
+      title: "Quản lý ticket lắp đặt",
+      icon: "fa fa-wrench",
+    },
+    children: [
+      {
+        path: "/manage/install",
+        component: () => import("@/views/install/"),
+        name: "Ticketinstallq",
+        meta: {
+          title: "Quản lý ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+      {
+        path: "/manage/installnew",
+        component: () => import("@/views/install/new.vue"),
+        name: "Ticketinstallnew",
+        meta: {
+          title: "Mới tạo ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+      {
+        path: "/manage/installrequest",
+        component: () => import("@/views/install/request.vue"),
+        name: "Requestinstall",
+        meta: {
+          title: "Cần thẩm định ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+      {
+        path: "/manage/installconfirm",
+        component: () => import("@/views/install/confirm.vue"),
+        name: "Confirminstall",
+        meta: {
+          title: "Yêu cầu xử lý lại ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+      {
+        path: "/manage/installwaitreport",
+        component: () => import("@/views/install/waitreport.vue"),
+        name: "Waitreportinstall",
+        meta: {
+          title: "Đợi ra biên bản ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+      {
+        path: "/manage/installreport",
+        component: () => import("@/views/install/report.vue"),
+        name: "Reportinstall",
+        meta: {
+          title: "Đã ra biên bản ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+      {
+        path: "/manage/installcancel",
+        component: () => import("@/views/install/cancel.vue"),
+        name: "Cancelinstall",
+        meta: {
+          title: "Đã xử lý ticket lắp đặt",
+          roles: [1, 2, 3, 4, 5, 6],
+        },
+      },
+    ],
+  },
+  {
     path: "/manage/qc/ticket",
     pathparent: "/manage/dashboardqc",
     component: Layout,
@@ -791,6 +913,15 @@ export const constantRoutes = [
         name: "Recordstaffstaffrecord",
         meta: {
           title: "Báo cáo ticket NV",
+          roles: [1, 2, 3, 4],
+        },
+      },
+      {
+        path: "/manage/installrecord",
+        component: () => import("@/views/install/record.vue"),
+        name: "Recordinstall",
+        meta: {
+          title: "Báo cáo ticket lắp đặt",
           roles: [1, 2, 3, 4],
         },
       },

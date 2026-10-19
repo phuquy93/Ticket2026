@@ -300,7 +300,7 @@
                 <div class="field-value">
                   {{
                     detail.ThoiGianVe.search("1/1/1900") === -1
-                      ? detail.ThoiGianVe
+                      ? formatThoiGianVe(detail.ThoiGianVe)
                       : "Chưa giao hàng"
                   }}
                 </div>
@@ -1820,6 +1820,12 @@ export default {
   },
 
   methods: {
+    // ThoiGianVe dạng M/D/YYYY ... -> đổi thành D/M/YYYY ..., giữ nguyên phần giờ
+    formatThoiGianVe(value) {
+      const [date, ...time] = value.split(" ");
+      const [m, d, y] = date.split("/");
+      return [`${d}/${m}/${y}`, ...time].join(" ");
+    },
     checkcallercaller() {
       if (this.$route.name === "Ticketcallerinfo") return true;
       return false;

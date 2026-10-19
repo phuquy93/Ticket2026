@@ -230,6 +230,7 @@
 <script>
 import { Message } from "element-ui";
 import { getLists, deleteTicketStaff, postExcel } from "@/api/ticket";
+import openDetailFromQuery from "@/utils/openDetailFromQuery";
 import Add from "./add.vue";
 import { removeData, getUser } from "@/utils/auth.js";
 import Popup from "./detail.vue";
@@ -243,6 +244,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 
 export default {
   components: { Add, Popup },
+  mixins: [openDetailFromQuery],
   data() {
     return {
       formAdd: false,

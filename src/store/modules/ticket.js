@@ -1,4 +1,4 @@
-import { getDashboard, getDashboard2, getDashboardqc, getDashboardcall, getDashboardinfo, getDashboardviolate, getDashboardonline, getDashboardsupplies, getDashboardurgent } from '@/api/ticket'
+import { getDashboard, getDashboard2, getDashboardinstall, getDashboardqc, getDashboardcall, getDashboardinfo, getDashboardviolate, getDashboardonline, getDashboardsupplies, getDashboardurgent } from '@/api/ticket'
 
 const getDefaultState = () => {
   return {
@@ -31,6 +31,17 @@ const actions = {
   getDashboard2({ commit }) {
     return new Promise((resolve, reject) => {
       getDashboard2().then(response => {
+        if (response.status === 200) {
+          commit('GET_DASHBOARD', response.data)
+        }
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  }, getDashboardinstall({ commit }) {
+    return new Promise((resolve, reject) => {
+      getDashboardinstall().then(response => {
         if (response.status === 200) {
           commit('GET_DASHBOARD', response.data)
         }

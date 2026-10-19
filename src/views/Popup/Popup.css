@@ -346,3 +346,274 @@
     background-position: 0% 50%, 50% 50%, 100% 100%;
   }
 }
+
+/* ===== Giao diện chi tiết dạng tab + bảng 2 cột (theo Ticket_UI_2026) ===== */
+.el-drawer__header {
+  padding: 10px !important;
+  margin: 0 !important;
+}
+.detailprint > .section-card {
+  margin: 20px;
+}
+
+/* Tab chính của popup chi tiết: Thông tin / Tài liệu đính kèm */
+.detail-tabs {
+  padding: 0 20px;
+}
+.detail-tabs > .el-tabs__header {
+  max-width: none;
+  margin-bottom: 16px;
+}
+.detail-tabs > .el-tabs__header .el-tabs__item {
+  font-size: 15px;
+  font-weight: 600;
+}
+/* Trong tab, section-card không cần margin ngang thừa */
+.detail-tabs .popup-grid {
+  padding: 0;
+}
+/* ===== UI dạng bảng 2 cột (giống thiết kế) - chỉ CSS ===== */
+/* Mỗi section chiếm full chiều ngang, xếp dọc */
+.detail-tabs .popup-grid {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+/* Section = bảng 2 cột cặp: nhãn|giá trị | nhãn|giá trị */
+.detail-tabs .section-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #ebeef5;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  background: #fff;
+}
+/* Tiêu đề section: chữ đậm, gạch chân, không nền, không icon */
+.detail-tabs .section-header {
+  grid-column: 1 / -1;
+  background: #ddd;
+  border: none;
+  border-bottom: 1px solid #ebeef5;
+  padding: 12px;
+  margin: 0;
+}
+.detail-tabs .section-header i {
+  display: none;
+}
+.detail-tabs .section-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2d3d;
+}
+/* Mỗi field-group = 1 ô (nhãn + giá trị). Dùng border-bottom + border-right
+   để tạo lưới đầy đủ, kể cả ô trống cuối hàng vẫn có viền. Ép về hàng ngang
+   (bỏ mọi flex-direction: column inline). */
+.detail-tabs .field-group,
+.detail-tabs .field-group:nth-child(odd) {
+  display: flex;
+  flex-direction: row !important;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border-bottom: 1px solid #ebeef5;
+  border-right: 1px solid #ebeef5;
+}
+/* Ô nhãn: nền màu khác, chữ xám */
+.detail-tabs .field-label {
+  background: #f7f8fa;
+  color: #606266;
+  font-weight: 500 !important;
+  font-size: 15px;
+  min-width: 160px;
+  width: 160px;
+  flex-shrink: 0;
+  padding: 10px 12px;
+  border-right: 1px solid #ebeef5;
+  display: flex;
+  align-items: flex-start;
+}
+/* Ô giá trị: chỉ cao bằng nội dung (không giãn theo ô cao của hàng) */
+.detail-tabs .field-value {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  color: #1f2d3d;
+  font-size: 15px;
+  display: flex;
+  align-self: flex-start;
+  align-items: stretch;
+  gap: 8px;
+}
+/* Hàng có input/select/textarea + nút Lưu: input giãn rộng, nút cao bằng input */
+.detail-tabs .field-value > .el-input,
+.detail-tabs .field-value > .el-select,
+.detail-tabs .field-value > .el-textarea,
+.detail-tabs .call-button-container > .el-input,
+.detail-tabs .call-button-container > .el-textarea {
+  flex: 1;
+}
+.detail-tabs .field-value > .el-button,
+.detail-tabs .call-button-container > .el-button {
+  align-self: stretch;
+  height: auto;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+}
+/* Nội dung dạng box/bảng (Tài liệu, Chi tiết biên nhận): span full 2 cột */
+.detail-tabs .section-card > .box,
+.detail-tabs .section-card > .field-content {
+  grid-column: 1 / -1;
+  border-top: 1px solid #ebeef5;
+}
+
+/* ===== Cố định vùng trên (header + thanh tab), chỉ cuộn nội dung ===== */
+.el-drawer__body {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding-bottom: 0 !important;
+}
+.el-drawer__body > .detailprint {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+/* Header (ID / trạng thái / lý do) luôn cố định */
+.detailprint > .popup-header {
+  flex-shrink: 0;
+}
+/* Vùng tab chiếm phần còn lại */
+.detailprint > .detail-tabs {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* Thanh tab (Thông tin / Tài liệu) luôn cố định */
+.detail-tabs > .el-tabs__header {
+  flex-shrink: 0;
+}
+/* Chỉ nội dung trong tab được cuộn */
+.detail-tabs > .el-tabs__content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ===== Khi IN: hiện tất cả tab (kể cả Tài liệu đính kèm) ===== */
+@media print {
+  /* Chỉ hiện 2 tab chính (Thông tin / Tài liệu) - KHÔNG đụng tab tiêu chí lồng bên trong
+     (nếu hiện hết tab tiêu chí sẽ bị in lặp lại nhiều lần) */
+  .detail-tabs > .el-tabs__content > .el-tab-pane {
+    display: block !important;
+  }
+  /* Bỏ giới hạn cuộn/chiều cao cố định để in đủ toàn bộ nội dung.
+     Lưu ý: v-print chỉ clone #printMe nên nhắm thẳng các phần tử bên trong. */
+  .el-drawer__body,
+  .detailprint,
+  .detail-tabs,
+  .detailprint > .detail-tabs,
+  .detail-tabs > .el-tabs__content,
+  .el-tabs__content {
+    display: block !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+  }
+  /* Ẩn thanh chọn tab khi in cho gọn (nội dung 2 tab in nối tiếp) */
+  .detail-tabs > .el-tabs__header {
+    display: none !important;
+  }
+  /* In: mỗi section về 1 cột -> mỗi trường (nhãn + giá trị) 1 dòng */
+  .detail-tabs .section-card {
+    display: block !important;
+  }
+  /* Bỏ viền phải thừa khi chỉ còn 1 cột */
+  .detail-tabs .field-group {
+    border-right: none !important;
+  }
+}
+
+/* ===== Tài liệu đính kèm: full chiều ngang + có viền cho dễ nhìn ===== */
+/* Tab "Tài liệu" KHÔNG dùng lưới 2 cột -> mọi thứ full width */
+#pane-files .section-card {
+  display: block !important;
+}
+#pane-files .section-card > .field-content,
+#pane-files .section-card > .box {
+  width: 100%;
+}
+.detail-tabs .field-content {
+  width: 100%;
+}
+/* Mỗi khối là 1 hàng full width, có viền dưới ngăn cách */
+.detail-tabs .field-content > .box {
+  width: 100%;
+  margin: 0;
+  padding: 12px 16px;
+  border-top: none;
+  border-bottom: 1px solid #ebeef5;
+}
+.detail-tabs .field-content > .box:last-child {
+  border-bottom: none;
+}
+.detail-tabs .field-content .box h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #606266;
+}
+/* Nhóm Hình ảnh / File ghi âm / Log: chia cột đều nhau, có viền ngăn cách */
+.detail-tabs .flex-style {
+  display: flex;
+  width: 100%;
+  gap: 0;
+}
+.detail-tabs .flex-style > .box {
+  flex: 1;
+  width: auto !important;
+  padding: 12px 16px;
+  border-right: 1px solid #ebeef5;
+  border-bottom: none;
+}
+.detail-tabs .flex-style > .box:last-child {
+  border-right: none;
+}
+
+/* Drawer chi tiết: component Popup có 1 thẻ <div> bọc ngoài .detailprint,
+   nên phải cho flex đi xuyên qua thẻ bọc đó thì vùng nội dung tab mới cuộn được */
+.el-drawer {
+  display: flex;
+  flex-direction: column;
+}
+.el-drawer__body {
+  flex: 1;
+  min-height: 0;
+}
+.el-drawer__body > div {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.el-drawer__body > div > .detailprint {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+/* Phòng khi chi tiết không có tab: cho cả khối cuộn */
+.el-drawer__body > div > .detailprint:not(:has(> .detail-tabs)) {
+  overflow-y: auto;
+}

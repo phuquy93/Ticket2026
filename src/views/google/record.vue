@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <div class="app-container list-page">
+    <div class="filter-card">
     <el-row class="search">
       <el-col :span="5">
         <el-select v-model="select" placeholder="Select">
@@ -63,41 +64,63 @@
             :label="d.date"
           /> </el-select
       ></el-col>
-      <el-col :span="4">
+    </el-row>
+      <div class="filter-actions">
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">
           Tìm kiếm
         </el-button>
-      </el-col>
-    </el-row>
-
-    <div class="table-legend" v-if="lists && lists.length">
-      <span class="table-legend__box"></span>
-      <span>Yêu cầu xử lý</span>
+      </div>
     </div>
+
+    <div class="table-card">
+      <div class="table-card__head">
+        <div class="table-legend" v-if="lists && lists.length">
+          <span class="table-legend__box"></span>
+          <span>Yêu cầu xử lý</span>
+        </div>
+        <div class="table-card__actions">
+          <el-button
+            style="margin-bottom: 5px"
+            type="primary"
+            icon="el-icon-download"
+            @click="exportExcelOne()"
+          >
+            Excel xuất đếm số sao google
+          </el-button>
+          <el-button
+            style="margin-bottom: 5px"
+            type="primary"
+            icon="el-icon-download"
+            @click="exportExcelcriterion()"
+          >
+            Excel xuất đếm sao sánh google
+          </el-button>
+        </div>
+      </div>
     <el-table
       v-if="tab === 1"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
       :row-class-name="tableRowClassName"
     >
-      <el-table-column label="Mã chi nhánh">
+      <el-table-column label="Mã chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.machinhanh }}
         </template>
       </el-table-column>
-      <el-table-column label="Tên Chi Nhánh">
+      <el-table-column label="Tên Chi Nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.name_store }}
         </template>
       </el-table-column>
-      <el-table-column label="Số Sao Ngày bắt đầu">
+      <el-table-column label="Số Sao Ngày bắt đầu" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.avg_rate_date_start }}
         </template>
       </el-table-column>
-      <el-table-column label="Tổng Số Lượt Vote">
+      <el-table-column label="Tổng Số Lượt Vote" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.total_rate_date_start }}
         </template>
@@ -107,80 +130,60 @@
       v-if="tab === 2"
       v-loading="loading"
       :data="paginationslice(lists, 10, page)"
-      style="width: 100%; margin-top: 30px; margin-bottom: 30px"
+      style="width: 100%"
       border
     >
-      <el-table-column label="Mã chi nhánh" width="120">
+      <el-table-column label="Mã chi nhánh" width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.machinhanh }}
         </template>
       </el-table-column>
-      <el-table-column label="Tên chi nhánh">
+      <el-table-column label="Tên chi nhánh" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.name_store }}
         </template>
       </el-table-column>
-      <el-table-column label="Số Sao Ngày bắt đầu">
+      <el-table-column label="Số Sao Ngày bắt đầu" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.avg_rate_date_start }}
         </template>
       </el-table-column>
-      <el-table-column label="Tổng Số Lượt Vote bắt đầu">
+      <el-table-column label="Tổng Số Lượt Vote bắt đầu" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.total_rate_date_start }}
         </template>
       </el-table-column>
-      <el-table-column label="Số Sao Ngày kết thúc">
+      <el-table-column label="Số Sao Ngày kết thúc" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.avg_rate_date_end }}
         </template>
       </el-table-column>
-      <el-table-column label="Tổng Số Lượt Vote ngày kết thúc">
+      <el-table-column label="Tổng Số Lượt Vote ngày kết thúc" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.total_rate_date_end }}
         </template>
       </el-table-column>
-      <el-table-column label="Chênh lực số sao">
+      <el-table-column label="Chênh lực số sao" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.avg_rate_compare }}
         </template>
       </el-table-column>
-      <el-table-column label="Chênh lực số vote">
+      <el-table-column label="Chênh lực số vote" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.total_rate_compare }}
         </template>
       </el-table-column>
     </el-table>
 
-    <el-pagination
-      :current-page.sync="page"
-      :page-size="10"
-      :pager-count="11"
-      layout="total,prev, pager, next"
-      :total="lists.length"
-      @current-change="handlePage"
-    />
-    <!-- Excel -->
-    <el-row style="margin-top: 30px">
-      <el-col :span="24">
-        <el-button
-          style="margin-bottom: 5px"
-          type="primary"
-          icon="el-icon-download"
-          @click="exportExcelOne()"
-        >
-          Excel xuất đếm số sao google
-        </el-button>
-        <el-button
-          style="margin-bottom: 5px"
-          type="primary"
-          icon="el-icon-download"
-          @click="exportExcelcriterion()"
-        >
-          Excel xuất đếm sao sánh google
-        </el-button>
-      </el-col>
-    </el-row>
+      <el-pagination
+        :current-page.sync="page"
+        :page-size="10"
+        :pager-count="11"
+        layout="total,prev, pager, next"
+        :total="lists.length"
+        @current-change="handlePage"
+      />
+    </div>
   </div>
 </template>
 

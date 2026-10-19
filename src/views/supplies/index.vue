@@ -263,6 +263,7 @@
 import Popup from "./Popup.vue";
 
 import { getLists, postExcelqc } from "@/api/ticket";
+import openDetailFromQuery from "@/utils/openDetailFromQuery";
 import { Message } from "element-ui";
 import { removeData, getUser } from "@/utils/auth.js";
 
@@ -277,6 +278,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 export default {
   name: "ComponentCompleted",
   components: { Popup },
+  mixins: [openDetailFromQuery],
   data() {
     return {
       lists: [],
@@ -330,8 +332,8 @@ export default {
         this.loadingStore = false;
       });
     }
-    if (!!window.location.hash && window.location.hash.split("=")[1]) {
-      this.form.approved = window.location.hash.split("=")[1];
+    if (this.routeParam("approved")) {
+      this.form.approved = this.routeParam("approved");
     }
     this.getLists(1);
   },

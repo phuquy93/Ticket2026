@@ -237,6 +237,7 @@
 <script>
 import Popup from "./detail.vue";
 import { getLists } from "@/api/ticket";
+import openDetailFromQuery from "@/utils/openDetailFromQuery";
 import { Message } from "element-ui";
 import { removeData, getUser } from "@/utils/auth.js";
 import Add from "./add.vue";
@@ -252,6 +253,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 export default {
   name: "ComponentCompleted",
   components: { Popup, Add },
+  mixins: [openDetailFromQuery],
   data() {
     return {
       formAdd: false,

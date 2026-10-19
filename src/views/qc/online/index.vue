@@ -98,6 +98,24 @@
           Tìm kiếm
         </el-button>
       </el-col>
+      <el-col :span="5">
+        <el-button
+          type="warning"
+          :plain="storeField !== 'code_store'"
+          @click="handleStoreField('code_store')"
+        >
+          Ticket chi nhánh xử lý
+        </el-button>
+      </el-col>
+      <el-col :span="5">
+        <el-button
+          type="success"
+          :plain="storeField !== 'code_store_rate'"
+          @click="handleStoreField('code_store_rate')"
+        >
+          Ticket chi nhánh nhận
+        </el-button>
+      </el-col>
     </el-row>
     <!-- Pagination -->
     <el-pagination
@@ -281,6 +299,7 @@ import Popup from "./Popup/Popup.vue";
 import Add from "./add.vue";
 import Detail from "./Popup/Detail.vue";
 import { getLists, postExcelqc } from "@/api/ticket";
+import openDetailFromQuery from "@/utils/openDetailFromQuery";
 import { Message } from "element-ui";
 import { removeData, getUser } from "@/utils/auth.js";
 
@@ -295,6 +314,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 export default {
   name: "ComponentCompleted",
   components: { Popup, Detail, Add },
+  mixins: [openDetailFromQuery],
   data() {
     return {
       formAdd: false,
@@ -331,6 +351,9 @@ export default {
 
       page: 1,
 
+      // Tên tham số lọc chi nhánh gửi lên listticket: store (mặc định) | code_store | code_store_rate
+      storeField: "store",
+
       process: url,
 
       file: null,
@@ -351,8 +374,8 @@ export default {
         this.loadingStore = false;
       });
     }
-    if (!!window.location.hash && window.location.hash.split("=")[1]) {
-      this.form.approved = window.location.hash.split("=")[1];
+    if (this.routeParam("approved")) {
+      this.form.approved = this.routeParam("approved");
     }
     this.getLists(1);
   },
@@ -456,6 +479,11 @@ export default {
     handleStore() {
       this.getLists(1);
     },
+    // Bấm lại nút đang chọn thì quay về lọc mặc định (store)
+    handleStoreField(field) {
+      this.storeField = this.storeField === field ? "store" : field;
+      this.getLists(1);
+    },
     ruleApproved(rule) {
       if (rule === 0) {
         return "Mới tạo";
@@ -518,6 +546,7 @@ export default {
         tienphat: this.form.tienphat,
         approved: this.form.approved,
         code_store: this.form.code_store,
+        store_field: this.storeField,
 pbn: this.form.pbn,
         phone: this.form.phone,
         date_cre_date_start,

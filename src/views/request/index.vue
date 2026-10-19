@@ -240,6 +240,7 @@
 import Popup from "../Popup/Popup.vue";
 import Detail from "../Popup/Detail.vue";
 import { getLists, sendMail } from "@/api/ticket";
+import openDetailFromQuery from "@/utils/openDetailFromQuery";
 import { Message } from "element-ui";
 import { removeData, getUser } from "@/utils/auth.js";
 
@@ -254,6 +255,7 @@ if (window.location.host === "dmcltk.stdmcl.com:8099") {
 export default {
   name: "ComponentCompleted",
   components: { Popup, Detail },
+  mixins: [openDetailFromQuery],
   data() {
     return {
       lists: [],

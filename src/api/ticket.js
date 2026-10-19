@@ -37,6 +37,13 @@ export function getDashboard2() {
   });
 }
 
+export function getDashboardinstall() {
+  return request({
+    url: "/restful/countapprovedticket?type=7",
+    method: "get",
+  });
+}
+
 export function getDashboardqc() {
   return request({
     url: "/restful/countapprovedticket?type=2&doitra=1",
@@ -133,7 +140,7 @@ export function getLists(data) {
     }
   }
 
-  if (Number(data.type) === 1) {
+  if (Number(data.type) === 1 || Number(data.type) === 7) {
     id = "&id=" + data.id;
   } else {
     if (data.pbn) pbn = "&pbn=" + data.pbn;
@@ -160,7 +167,9 @@ export function getLists(data) {
       rate_customer +
       "&approved=" +
       data.approved +
-      "&store=" +
+      "&" +
+      (data.store_field || "store") +
+      "=" +
       data.code_store +
       "&date_cre_date_start=" +
       data.date_cre_date_start +

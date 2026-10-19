@@ -1,51 +1,85 @@
 <template>
   <div class="sidebar-inner">
     <div class="bg_overflow" @click.prevent="handleMenu" />
-    <div class="sidebar-container">
-      <el-menu
-        :collapse="iscollapse"
-        class="el-menu-vertical-demo"
-        theme="light"
-        :default-active="defaultBar"
-      >
-        <template
-          v-for="(item, index) in siderBars.filter((a) => a.alwaysShow)"
-        >
-          <template v-if="item.children && item.children.length > 1">
-            <el-submenu :key="index" :index="item.path">
-              <template slot="title"
-                ><i :class="item.meta.icon" aria-hidden="true" />{{
-                  item.meta.title
-                }}</template
-              >
-              <el-menu-item
-                v-for="(subItem, i) in returnChildren(item.children)"
-                :key="i"
-                :index="subItem.path"
-                ><router-link :to="subItem.path">{{
-                  subItem.meta.title
-                }}</router-link></el-menu-item
-              >
-            </el-submenu>
-          </template>
-
-          <template
-            v-else-if="
-              item.children && item.children.length === 1 && rolesOther(item)
-            "
+    <div class="sidebar-container app-sidebar">
+      <div class="app-brand">
+        <div class="brand-row">
+          <router-link to="/" title="Trang chủ">
+            <img
+              class="logo-img"
+              src="http://180.16.1.133:8080/js/app_serial_system/img/logo.png"
+              alt="Điện Máy Chợ Lớn"
+            />
+          </router-link>
+          <span class="brand-mark" aria-hidden="true">D</span>
+          <button
+            class="rail-btn"
+            type="button"
+            :title="railCollapsed ? 'Mở rộng menu' : 'Thu gọn menu'"
+            @click="toggleRail"
           >
-            <el-menu-item :key="index" :index="item.path">
-              <router-link :to="item.path">
-                <i :class="item.meta.icon" aria-hidden="true" />{{
-                  item.meta.title
-                }}<span v-if="getNoti(item.path)" class="menu-noti-badge">{{
-                  getNoti(item.path)
-                }}</span></router-link
-              >
-            </el-menu-item>
-          </template>
+            <i class="fas fa-chevron-left" aria-hidden="true" />
+          </button>
+        </div>
+        <span class="portal-pill"><span class="dot" /> Cổng Ticket</span>
+      </div>
+
+      <nav class="app-nav">
+        <template v-for="group in menuGroups">
+          <button
+            :key="group.key + '-head'"
+            type="button"
+            class="app-nav-group"
+            :class="{ collapsed: !isOpen(group) }"
+            :aria-expanded="isOpen(group) ? 'true' : 'false'"
+            @click="toggleGroup(group.key)"
+          >
+            <span>{{ group.label }}</span>
+            <em v-if="group.noti && !isOpen(group)" class="menu-noti-badge">{{
+              group.noti
+            }}</em>
+            <i class="fas fa-chevron-down nav-chev" aria-hidden="true" />
+          </button>
+          <div
+            :key="group.key + '-items'"
+            class="app-nav-items"
+            :class="{ 'is-closed': !isOpen(group) }"
+          >
+            <router-link
+              v-for="item in group.items"
+              :key="item.path"
+              :to="item.path"
+              :title="item.title"
+              :class="{ 'is-active': item.path === activePath }"
+            >
+              <i :class="item.icon" aria-hidden="true" />
+              <span>{{ item.title }}</span>
+              <em v-if="item.noti" class="menu-noti-badge">{{ item.noti }}</em>
+            </router-link>
+          </div>
         </template>
-      </el-menu>
+      </nav>
+
+      <div class="app-user">
+        <router-link to="/profile" class="who-link" title="Thông tin tài khoản">
+          <span class="avatar">{{ initials }}</span>
+          <span class="who">
+            <b>{{ fullname }}</b>
+            <span>{{ isAdmin ? "Quản trị viên" : "Nhân viên" }}</span>
+          </span>
+        </router-link>
+        <router-link
+          to="/profile"
+          class="user-action"
+          :class="{ 'is-active': $route.path === '/profile' }"
+          title="Profile"
+        >
+          <i class="fas fa-user-cog" aria-hidden="true" />
+        </router-link>
+        <a href="#" class="user-action" title="Thoát" @click.prevent="logout">
+          <i class="fas fa-sign-out-alt" aria-hidden="true" />
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -61,6 +95,7 @@ import { getCountTicketXuly } from "@/api/ticket";
 const NOTI_CONFIG = {
   "/manage/dashboard": { type: 0 },
   "/manage/dashboard-nhanvien": { type: 1 },
+  "/manage/dashboardinstall": { type: 7 },
   "/manage/dashboardqc": { type: 2, doitra: 1 },
   "/manage/dashboardcall": { type: 2, doitra: 2 },
   "/manage/dashboardinfo": { type: 2, doitra: 3 },
@@ -70,12 +105,69 @@ const NOTI_CONFIG = {
   "/manage/dashboardurgent": { type: 4 },
 };
 
+// Nhóm menu sidebar (theo path của route cha trong router). Route alwaysShow
+// nào không nằm trong nhóm nào sẽ rơi vào nhóm "Khác" để không mất link.
+const GROUPS = [
+  { key: "overview", label: "Tổng quan", paths: ["/manage/chart"] },
+  {
+    key: "ticket",
+    label: "Ticket",
+    paths: [
+      "/manage/dashboard",
+      "/manage/dashboard-nhanvien",
+      "/manage/dashboardinstall",
+      "/manage/dashboardqc",
+      "/manage/dashboardcall",
+      "/manage/dashboardinfo",
+      "/manage/dashboardviolate",
+      "/manage/dashboardonline",
+      "/manage/dashboardsupplies",
+      "/manage/dashboardurgent",
+    ],
+  },
+  { key: "report", label: "Báo cáo", paths: ["/manage/record"] },
+  {
+    key: "admin",
+    label: "Quản trị",
+    paths: [
+      "/manage/store",
+      "/manage/user",
+      "/manage/userqc",
+      "/manage/department",
+      "/manage/rate",
+    ],
+  },
+];
+
+// Icon riêng cho từng mục (route trong router đang dùng chung fa-align-left)
+const ICONS = {
+  "/manage/chart": "fas fa-chart-bar",
+  "/manage/dashboard": "fas fa-comment-dots",
+  "/manage/dashboard-nhanvien": "fas fa-video",
+  "/manage/dashboardinstall": "fas fa-tools",
+  "/manage/dashboardqc": "fas fa-exchange-alt",
+  "/manage/dashboardcall": "fas fa-robot",
+  "/manage/dashboardinfo": "fas fa-info-circle",
+  "/manage/dashboardviolate": "fas fa-truck",
+  "/manage/dashboardonline": "fas fa-globe-asia",
+  "/manage/dashboardsupplies": "fas fa-boxes",
+  "/manage/dashboardurgent": "fas fa-phone-volume",
+  "/manage/store": "fas fa-store",
+  "/manage/user": "fas fa-user",
+  "/manage/userqc": "fas fa-user-shield",
+  "/manage/department": "fas fa-sitemap",
+  "/manage/rate": "fas fa-star",
+};
+
+const STORAGE_KEY = "Ticket-Sidebar-Groups";
+
 export default {
   name: "Sidebar",
   data() {
     return {
       notiData: [],
       notiTimer: null,
+      groupState: this.loadGroupState(),
     };
   },
   created() {
@@ -90,27 +182,142 @@ export default {
     }
   },
   computed: {
-    iscollapse() {
-      return this.$store.state.settings.isCollapse;
+    railCollapsed() {
+      return this.$store.state.settings.sidebar.opened;
     },
-    siderBars() {
-      return constantRoutes;
+    user() {
+      return this.$store.state.user.user || [];
     },
-    defaultBar() {
-      if (!!this.findParentRoute()) {
-        return this.findParentRoute().pathparent;
+    userField() {
+      return (key) => {
+        const found = this.user.find((a) => a.split("=")[0] === key);
+        return found ? found.split("=")[1] : "";
+      };
+    },
+    fullname() {
+      return this.userField("data") || "Tài khoản";
+    },
+    initials() {
+      const words = this.fullname.trim().split(/\s+/);
+      const first = words[0] ? words[0][0] : "?";
+      const last = words.length > 1 ? words[words.length - 1][0] : "";
+      return (first + last).toUpperCase();
+    },
+    isAdmin() {
+      return Number(this.userField("rule")) === 1;
+    },
+    activePath() {
+      const parent = this.findParentRoute();
+      if (parent && parent.pathparent) {
+        return parent.pathparent;
       }
       if (this.$route.params.id) {
         return this.$route.fullPath.replace("/" + this.$route.params.id, "");
       }
       return this.$route.path;
     },
+    menuGroups() {
+      const routes = constantRoutes.filter((a) => a.alwaysShow);
+      const used = new Set();
+      const build = (route) => {
+        if (route.children && route.children.length > 1) {
+          return this.returnChildren(route.children).map((c) => ({
+            path: c.path,
+            title: c.meta.title,
+            icon: ICONS[c.path] || "fas fa-file-alt",
+          }));
+        }
+        if (
+          route.children &&
+          route.children.length === 1 &&
+          this.rolesOther(route)
+        ) {
+          return [
+            {
+              path: route.path,
+              title: route.meta.title,
+              icon: ICONS[route.path] || route.meta.icon,
+            },
+          ];
+        }
+        return [];
+      };
 
-    user() {
-      return this.$store.state.user.user;
+      const groups = GROUPS.map((g) => {
+        const items = [];
+        g.paths.forEach((p) => {
+          const route = routes.find((r) => r.path === p);
+          if (!route) return;
+          used.add(route);
+          items.push(...build(route));
+        });
+        return { key: g.key, label: g.label, items };
+      });
+
+      const others = routes.filter((r) => !used.has(r));
+      if (others.length) {
+        groups.push({
+          key: "other",
+          label: "Khác",
+          items: others.reduce((acc, r) => acc.concat(build(r)), []),
+        });
+      }
+
+      return groups
+        .filter((g) => g.items.length)
+        .map((g) => {
+          g.items.forEach((it) => {
+            it.noti = this.getNoti(it.path);
+          });
+          g.noti = g.items.reduce((sum, it) => sum + it.noti, 0);
+          return g;
+        });
+    },
+    currentGroupKey() {
+      const g = this.menuGroups.find((grp) =>
+        grp.items.some((it) => it.path === this.activePath)
+      );
+      return g ? g.key : null;
+    },
+  },
+  watch: {
+    // Chuyển trang thì bung nhóm chứa trang đó (nếu người dùng đã đóng trước đó)
+    currentGroupKey(key) {
+      if (key && this.groupState[key] === false) {
+        this.toggleGroup(key);
+      }
     },
   },
   methods: {
+    loadGroupState() {
+      try {
+        return JSON.parse(sessionStorage.getItem(STORAGE_KEY)) || {};
+      } catch (e) {
+        return {};
+      }
+    },
+    isOpen(group) {
+      if (group.key in this.groupState) return this.groupState[group.key];
+      // Mặc định: mở nhóm chứa trang đang xem, nhóm Ticket luôn mở
+      return group.key === this.currentGroupKey || group.key === "ticket";
+    },
+    toggleGroup(key) {
+      const group = this.menuGroups.find((g) => g.key === key);
+      this.groupState = { ...this.groupState, [key]: !this.isOpen(group) };
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.groupState));
+      } catch (e) {
+        // bỏ qua khi trình duyệt chặn storage
+      }
+    },
+    toggleRail() {
+      this.$store.dispatch("settings/changeIscollapse", !this.railCollapsed);
+    },
+    logout() {
+      this.$store.dispatch("user/logout").then(() => {
+        this.$store.dispatch("tabhistory/resetState");
+      });
+    },
     async fetchNoti() {
       try {
         const res = await getCountTicketXuly();
@@ -188,37 +395,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Neo badge theo từng dòng menu */
-.sidebar-container >>> .el-menu-item {
-  position: relative;
-}
-
-/* Giữ chữ menu trên 1 dòng, chừa chỗ bên phải cho badge */
-.sidebar-container >>> .el-menu-item a {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-right: 44px;
-}
-
-.menu-noti-badge {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  line-height: 20px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  background-color: #f56c6c;
-  border-radius: 10px;
-  box-sizing: border-box;
-}
-</style>
