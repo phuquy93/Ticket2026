@@ -101,8 +101,8 @@
       <el-col :span="5">
         <el-button
           type="warning"
-          :plain="storeField !== 'code_store'"
-          @click="handleStoreField('code_store')"
+          :plain="storeField !== 'code_store_vipham'"
+          @click="handleStoreField('code_store_vipham')"
         >
           Ticket chi nhánh xử lý
         </el-button>
@@ -351,7 +351,7 @@ export default {
 
       page: 1,
 
-      // Tên tham số lọc chi nhánh gửi lên listticket: store (mặc định) | code_store | code_store_rate
+      // Tên tham số lọc chi nhánh gửi lên listticket: store (mặc định) | code_store_vipham | code_store_rate
       storeField: "store",
 
       process: url,

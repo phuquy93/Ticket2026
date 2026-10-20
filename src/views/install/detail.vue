@@ -32,7 +32,7 @@
               class="error"
               style="margin-bottom: 10px; font-size: 16px"
             >
-              (Nội dung vi phạm và mã NV không có nên không thể ra biên bản)
+              (Mã NV không có nên không thể ra biên bản)
             </h1>
           </div>
           <div class="popup-actions">
@@ -1294,13 +1294,11 @@ export default {
           Number(
             this.user.find((a) => a.split("=")[0] === "rule").split("=")[1]
           ) === 3 &&
-          this.personnel_note !== "" &&
           this.personnel_name.trim() !== "") ||
         (this.detail.approved === 2 &&
           Number(
             this.user.find((a) => a.split("=")[0] === "rule").split("=")[1]
           ) === 1 &&
-          this.personnel_note !== "" &&
           this.personnel_name.trim() !== "")
       ) {
         return false;
@@ -1807,13 +1805,11 @@ export default {
           Number(
             this.user.find((a) => a.split("=")[0] === "rule").split("=")[1]
           ) === 3 &&
-          this.personnel_note !== "" &&
           this.personnel_name.trim() !== "") ||
         (this.detail.approved === 2 &&
           Number(
             this.user.find((a) => a.split("=")[0] === "rule").split("=")[1]
           ) === 1 &&
-          this.personnel_note !== "" &&
           this.personnel_name.trim() !== "")
       ) {
         this.list_rate.forEach((a) => {
@@ -1994,7 +1990,7 @@ export default {
     },
 
     disabled() {
-      if (this.personnel_note !== "" && this.personnel_name.trim() !== "") {
+      if (this.personnel_name.trim() !== "") {
         return false;
       }
       return true;
