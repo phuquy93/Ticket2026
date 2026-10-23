@@ -744,6 +744,48 @@ aside {
   z-index: 999999 !important;
 }
 
+/* el-select multiple + collapse-tags: giữ 1 dòng, tên chi nhánh dài thì cắt "..." */
+.el-select .el-select__tags {
+  flex-wrap: nowrap;
+  overflow: hidden;
+  max-width: calc(100% - 32px) !important;
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .el-tag {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  // Tag "+ N" không bị co lại
+  .el-tag + .el-tag {
+    flex-shrink: 0;
+  }
+
+  .el-select__tags-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .el-tag__close {
+    flex-shrink: 0;
+  }
+
+  .el-select__input {
+    min-width: 20px;
+    margin-left: 6px;
+  }
+}
+
 .box span {
   word-break: auto-phrase;
 }

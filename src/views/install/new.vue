@@ -6,11 +6,15 @@
           <el-input v-model="form.id" placeholder="Nhập id" />
         </el-col>
         <el-col :span="5">
+          <el-input v-model="form.pbn" placeholder="Nhập PBN" clearable />
+        </el-col>
+        <el-col :span="5">
           <el-select
             v-model="form.code_store"
             placeholder="Chọn chi nhánh"
             filterable
             multiple
+            collapse-tags
             :loading="loadingStore"
             :disabled="disabledstatus()"
           >
@@ -171,6 +175,16 @@
             {{ scope.row.code_store }} - {{ scope.row.store_name }}
           </template>
         </el-table-column>
+        <el-table-column
+          align="header-center"
+          label="PBN"
+          width="130"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            {{ scope.row.pbn }}
+          </template>
+        </el-table-column>
         <el-table-column label="Tiêu đề" min-width="220" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.name }}
@@ -292,6 +306,7 @@ export default {
 
       form: {
         id: "",
+        pbn: "",
         approved: "0",
         tienphat: "",
         date_cre_date_start: "",

@@ -34,6 +34,7 @@
           placeholder="Chọn chi nhánh"
           filterable
           multiple
+          collapse-tags
           :loading="loadingStore"
         >
           <el-option

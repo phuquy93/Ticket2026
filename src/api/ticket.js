@@ -142,8 +142,9 @@ export function getLists(data) {
 
   if (Number(data.type) === 1 || Number(data.type) === 7) {
     id = "&id=" + data.id;
-  } else {
-    if (data.pbn) pbn = "&pbn=" + data.pbn;
+  }
+  if (Number(data.type) !== 1 && data.pbn) {
+    pbn = "&pbn=" + data.pbn;
   }
   if (data.rate_customer) {
     rate_customer = "&rate_customer=" + data.rate_customer;

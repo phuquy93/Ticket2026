@@ -6,10 +6,14 @@
           <el-input v-model="form.id" placeholder="Nhập id" />
         </el-col>
         <el-col :span="5">
+          <el-input v-model="form.pbn" placeholder="Nhập PBN" clearable />
+        </el-col>
+        <el-col :span="5">
           <el-select
             v-model="form.code_store"
             filterable
             multiple
+            collapse-tags
             placeholder="Chọn chi nhánh"
             :disabled="disabledstatus()"
           >
@@ -143,6 +147,16 @@
         >
           <template slot-scope="scope">
             {{ scope.row.code_store }} - {{ scope.row.store_name }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="header-center"
+          label="PBN"
+          width="130"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            {{ scope.row.pbn }}
           </template>
         </el-table-column>
         <el-table-column label="Tiêu đề" min-width="220" show-overflow-tooltip>
@@ -295,6 +309,7 @@ export default {
 
       form: {
         id: "",
+        pbn: "",
         date_cre_date_start: "",
         date_cre_date_end: "",
         code_store:
@@ -506,6 +521,7 @@ export default {
 
       getLists({
         id: this.form.id,
+        pbn: this.form.pbn,
         page: page,
         approved: this.form.approved,
         code_store: this.form.code_store,

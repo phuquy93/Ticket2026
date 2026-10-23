@@ -57,6 +57,7 @@
           v-model="form.code_store"
           filterable
           multiple
+          collapse-tags
           placeholder="Chọn chi nhánh"
           :disabled="disabledstatus()"
         >
